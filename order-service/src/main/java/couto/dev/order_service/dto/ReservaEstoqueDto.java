@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ResponseEstoqueDto {
+public class ReservaEstoqueDto {
 
     private Integer produtoId;
     private Integer quantidade;

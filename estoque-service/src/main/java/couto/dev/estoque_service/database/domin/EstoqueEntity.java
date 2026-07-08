@@ -32,4 +32,9 @@ public class EstoqueEntity {
         this.atualizado = LocalDateTime.now();
     }
 
-}
+
+
+
+    }
+
+

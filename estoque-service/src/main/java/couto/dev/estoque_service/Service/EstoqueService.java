@@ -1,10 +1,13 @@
 package couto.dev.estoque_service.Service;
 
+import couto.dev.estoque_service.Enum.StatusProduto;
 import couto.dev.estoque_service.database.Enum.statusProduto;
 import couto.dev.estoque_service.database.domin.EstoqueEntity;
 import couto.dev.estoque_service.database.repository.EstoqueRepository;
-import couto.dev.estoque_service.dto.EstoqueDto;
 import couto.dev.estoque_service.dto.EstoqueRequestDto;
+import couto.dev.estoque_service.dto.EstoqueResponseDto;
+import couto.dev.estoque_service.dto.ResponseProdutoDto;
+import couto.dev.estoque_service.feingClient.ProdutoClient;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,21 +19,21 @@ import java.util.List;
 public class EstoqueService {
 
     private final EstoqueRepository estoqueRepository;
+    private  final ProdutoClient produtoClient;
+    
+    public void AdicionarEstoque(EstoqueRequestDto estoqueDto){
 
+        ResponseProdutoDto produto =
+                produtoClient.buscarProduto(estoqueDto.getProdutoId());
 
-
-
-    public void AdicionarEstoque(EstoqueDto estoqueDto){
-
-        if (estoqueDto.getStatusProduto() == statusProduto.INATIVO){
-            throw new RuntimeException(" produto inativo não poder ser adicionado no estoque");
+        if (produto.getStatusProduto() == statusProduto.INATIVO){
+            throw new RuntimeException("produto inativo");
         }
 
        EstoqueEntity estoque = new EstoqueEntity();
        estoque.setProdutoId(estoqueDto.getProdutoId());
        estoque.setQuantidade(estoqueDto.getQuantidade());
-
-       estoqueRepository.save(estoque);
+       this.estoqueRepository.save(estoque);
     }
 
     @Transactional
@@ -53,7 +56,7 @@ public class EstoqueService {
 
 
     @Transactional
-    public void rollbacEstoque(EstoqueDto dto){//implementar em pagamentos
+    public void rollbacEstoque(EstoqueRequestDto dto){//implementar em pagamentos
 
         EstoqueEntity estoque = estoqueRepository.findByProdutoId(dto.getProdutoId())
                 .orElseThrow(()-> new RuntimeException("estoque não encotrado"));
@@ -63,7 +66,7 @@ public class EstoqueService {
         );
     }
 
-    public List<EstoqueDto> listarPorId(Integer produtoId){
+    public List<EstoqueResponseDto> listarPorId(Integer produtoId){
        return estoqueRepository.findAllById(produtoId);
 
     }

@@ -1,8 +1,9 @@
 package couto.dev.produto_service.Controller;
 
 import couto.dev.produto_service.Service.ProdutoService;
-import couto.dev.produto_service.database.model.Produto;
+import couto.dev.produto_service.domin.Produto;
 import couto.dev.produto_service.dto.ProdutoDto;
+import couto.dev.produto_service.dto.ProdutoResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<Produto>> BuscarProdutoId(@PathVariable Integer id){
+    public ResponseEntity<ProdutoResponseDto> BuscarProdutoId(@PathVariable Integer id){
         return ResponseEntity.ok(produtoService.buscarPorId(id));
     }
 }

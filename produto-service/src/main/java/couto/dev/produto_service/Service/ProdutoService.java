@@ -5,6 +5,7 @@ import couto.dev.produto_service.domin.Produto;
 import couto.dev.produto_service.dto.ProdutoDto;
 import couto.dev.produto_service.dto.ProdutoResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProdutoService {
 
     @Autowired
@@ -40,6 +42,7 @@ public class ProdutoService {
 
     @Cacheable(value = "produtos",key = "#id")
     public ProdutoResponseDto buscarPorId(Integer id) {
+        log.info("buscando mysql");
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado."));
 

@@ -4,6 +4,7 @@ import couto.dev.estoque_service.database.Enum.statusProduto;
 import couto.dev.estoque_service.database.domin.EstoqueEntity;
 import couto.dev.estoque_service.database.repository.EstoqueRepository;
 import couto.dev.estoque_service.dto.EstoqueDto;
+import couto.dev.estoque_service.dto.EstoqueRequestDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,30 +34,26 @@ public class EstoqueService {
     }
 
     @Transactional
-    public EstoqueDto reservaEstoque(EstoqueDto estoqueDto, Integer quantidade){
+    public void reservaEstoque(EstoqueRequestDto estoqueDto){
 
-         EstoqueEntity estoque = estoqueRepository.findByProdutoId(estoqueDto.getProdutoId()).
-                 orElseThrow(()-> new RuntimeException("produto não encotrado"));
+        EstoqueEntity estoque = estoqueRepository.findByProdutoId(estoqueDto.getProdutoId()).
+                orElseThrow(()-> new RuntimeException("produto não encotrado"));
 
-        if ( estoqueDto.getQuantidade() < quantidade){
-            throw new RuntimeException( "estoque vazio");
+        if (estoque.getQuantidade() < estoqueDto.getQuantidade()){
+            throw new RuntimeException( "estoque insufisiente");
         }
 
         estoque.setQuantidade(
                 estoqueDto.getQuantidade() - estoque.getQuantidade()
         );
-        EstoqueEntity salvo = estoqueRepository.save(estoque);
-         return new EstoqueDto(
-          salvo.getId(),
-                 salvo.getProdutoId(),
-                 salvo.getQuantidade()
+        estoqueRepository.save(estoque);
 
-         );
     }
 
 
+
     @Transactional
-    public void rollbacEstoque(EstoqueDto dto){
+    public void rollbacEstoque(EstoqueDto dto){//implementar em pagamentos
 
         EstoqueEntity estoque = estoqueRepository.findByProdutoId(dto.getProdutoId())
                 .orElseThrow(()-> new RuntimeException("estoque não encotrado"));

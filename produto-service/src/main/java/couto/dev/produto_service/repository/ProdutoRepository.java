@@ -1,6 +1,6 @@
-package couto.dev.produto_service.database.repository;
+package couto.dev.produto_service.repository;
 
-import couto.dev.produto_service.database.model.Produto;
+import couto.dev.produto_service.domin.Produto;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

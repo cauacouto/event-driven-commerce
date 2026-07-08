@@ -1,7 +1,7 @@
 package couto.dev.estoque_service.Controller;
 
 import couto.dev.estoque_service.Service.EstoqueService;
-import couto.dev.estoque_service.dto.EstoqueDto;
+import couto.dev.estoque_service.dto.EstoqueResponseDto;
 import couto.dev.estoque_service.dto.EstoqueRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ public class estoquecontroller {
     private final EstoqueService estoqueService;
 
     @PostMapping
-    public ResponseEntity<Void> adicionarEstoque(@RequestBody EstoqueDto data){
+    public ResponseEntity<Void> adicionarEstoque(@RequestBody EstoqueRequestDto data){
         this.estoqueService.AdicionarEstoque(data);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -32,7 +32,7 @@ public class estoquecontroller {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<EstoqueDto>> listarEstoque(@PathVariable Integer id){
+    public ResponseEntity<List<EstoqueResponseDto>> listarEstoque(@PathVariable Integer id){
         return ResponseEntity.ok(estoqueService.listarPorId(id));
     }
 

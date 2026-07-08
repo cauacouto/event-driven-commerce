@@ -1,6 +1,8 @@
 package couto.dev.estoque_service.dto;
 
 import couto.dev.estoque_service.database.Enum.statusProduto;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,7 @@ public class ResponseProdutoDto {
     private String descricao;
     private  String categoria;
     private BigDecimal preco;
+    @Enumerated(EnumType.STRING)
     private statusProduto statusProduto;
     private LocalDateTime dataEntrada;
 }

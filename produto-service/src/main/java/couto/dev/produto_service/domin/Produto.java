@@ -1,4 +1,4 @@
-package couto.dev.produto_service.database.model;
+package couto.dev.produto_service.domin;
 
 import couto.dev.produto_service.Enum.statusProduto;
 import jakarta.persistence.*;

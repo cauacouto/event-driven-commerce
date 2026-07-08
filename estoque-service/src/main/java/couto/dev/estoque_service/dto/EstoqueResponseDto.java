@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EstoqueDto {
+public class EstoqueResponseDto {
 
     private Integer produtoId;
     private Integer quantidade;
     private statusProduto statusProduto;
     private LocalDateTime atualizado;
 
-    public EstoqueDto(Integer id, Integer produtoId, Integer quantidade) {
+    public EstoqueResponseDto(Integer id, Integer produtoId, Integer quantidade) {
     }
 }

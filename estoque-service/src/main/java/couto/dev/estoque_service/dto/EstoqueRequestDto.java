@@ -16,6 +16,8 @@ public class EstoqueRequestDto {
     private Integer quantidade;
 
 
-    public EstoqueRequestDto(Integer id, Integer produtoId, Integer quantidade) {
-    }
+
+
+
+
 }

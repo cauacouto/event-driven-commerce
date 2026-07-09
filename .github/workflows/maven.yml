@@ -36,6 +36,4 @@ jobs:
         working-directory: ./${{ matrix.service }}
         run: mvn clean verify
 
-      - name: Upload Dependency Graph
-        uses: advanced-security/maven-dependency-submission-action@v1
-    
+  

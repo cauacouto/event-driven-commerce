@@ -4,3 +4,37 @@ services:
     container_name: redis
     ports:
       - "6379:6379"
+      
+      
+      
+      
+      name: Java CI with Maven
+
+on:
+  push:
+    branches: ["main"]
+
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Build Project
+        run: mvn clean verify
+
+      - name: Upload Dependency Graph
+        uses: advanced-security/maven-dependency-submission-action@v1

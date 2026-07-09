@@ -15,8 +15,7 @@ jobs:
     strategy:
       matrix:
         service:
-          - api-gateway
-          - eureka-server
+          - gateway-serve
           - produto-service
           - estoque-service
           - order-service

@@ -19,6 +19,7 @@ jobs:
           - produto-service
           - estoque-service
           - order-service
+          - pagamento-service
         
 
     steps:

@@ -1,6 +1,6 @@
 package couto.dev.estoque_service.Service;
 
-import couto.dev.estoque_service.Enum.StatusProduto;
+import couto.dev.estoque_service.Enum.StatusEstoque;
 import couto.dev.estoque_service.database.Enum.statusProduto;
 import couto.dev.estoque_service.database.domin.EstoqueEntity;
 import couto.dev.estoque_service.database.repository.EstoqueRepository;
@@ -46,8 +46,9 @@ public class EstoqueService {
             throw new RuntimeException( "estoque insufisiente");
         }
 
+        estoque.setProdutoId(estoqueDto.getProdutoId());
         estoque.setQuantidade(
-                estoqueDto.getQuantidade() - estoque.getQuantidade()
+                estoque.getQuantidade() - estoqueDto.getQuantidade()
         );
         estoqueRepository.save(estoque);
 
@@ -61,9 +62,26 @@ public class EstoqueService {
         EstoqueEntity estoque = estoqueRepository.findByProdutoId(dto.getProdutoId())
                 .orElseThrow(()-> new RuntimeException("estoque não encotrado"));
 
+
+        estoque.setProdutoId(dto.getProdutoId());
         estoque.setQuantidade(
-                dto.getQuantidade() + estoque.getQuantidade()
+                estoque.getQuantidade() + dto.getQuantidade()
+
         );
+        estoque.setStatusEstoque(StatusEstoque.FALHA_PAGAMENTO);
+    }
+
+    @Transactional
+    public void confirmarReserva(Integer produtoId){
+        EstoqueEntity estoque = buscarEstoque(produtoId);
+        estoque.setStatusEstoque(StatusEstoque.PAGAMENTO_APROVADO);
+
+
+    }
+
+    public EstoqueEntity buscarEstoque(Integer produtoId){ //criar dtoResponse
+        return estoqueRepository.findByProdutoId(produtoId)
+                .orElseThrow(()-> new RuntimeException("estoque não encontrado"));
     }
 
     public List<EstoqueResponseDto> listarPorId(Integer produtoId){

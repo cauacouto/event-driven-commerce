@@ -1,5 +1,6 @@
 package couto.dev.estoque_service.database.domin;
 
+import couto.dev.estoque_service.Enum.StatusEstoque;
 import couto.dev.estoque_service.database.Enum.statusProduto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,8 @@ public class EstoqueEntity {
     private Integer quantidade;
     @Enumerated(EnumType.STRING)
     private statusProduto statusProduto;
+    @Enumerated(EnumType.STRING)
+    private StatusEstoque statusEstoque;
     private LocalDateTime atualizado;
 
     @PrePersist

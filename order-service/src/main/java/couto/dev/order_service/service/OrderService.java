@@ -1,10 +1,13 @@
 package couto.dev.order_service.service;
 
 import couto.dev.order_service.Enum.StatusOrder;
+import couto.dev.order_service.configRabbitmq.ProducerOrder;
 import couto.dev.order_service.domin.OrderEntity;
+import couto.dev.order_service.dto.OrderProducerDto;
 import couto.dev.order_service.dto.OrderRequestDto;
 import couto.dev.order_service.dto.ReservaEstoqueDto;
 import couto.dev.order_service.feingClint.estoqueClient;
+import couto.dev.order_service.mapping.OrderProducerMapper;
 import couto.dev.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,8 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final estoqueClient estoqueClient;
+    private final ProducerOrder producerOrder;
+    private final OrderProducerMapper producerMapper;
 
 
     public void criarOrder(OrderRequestDto dto){
@@ -39,12 +44,14 @@ public class OrderService {
 
         order.setValorTotal(valorTotal);
 
+       var orderSalva = orderRepository.save(order);
+        OrderProducerDto event =
+                producerMapper.toEvent(orderSalva);
 
 
-        orderRepository.save(order);
+        producerOrder.enviar(event);
 
 
-        //publicar evento
 
 
 

@@ -35,7 +35,6 @@ public class OrderService {
         OrderEntity order = new OrderEntity();
         order.setProdutoId(dto.getProdutoId());
         order.setQuantidade(dto.getQuantidade());
-        order.setValorProduto(dto.getValorPorduto());
         order.setStatusOrder(StatusOrder.AGUARDANDO_PAGAMENTO);
 
 

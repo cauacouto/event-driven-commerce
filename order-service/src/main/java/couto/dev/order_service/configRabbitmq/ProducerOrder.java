@@ -17,7 +17,7 @@ public class ProducerOrder {
     public void enviar(OrderProducerDto orderProducer){
       rabbitTemplate.convertAndSend(
               orderExchange.getName(),
-              "pagamentos.queue",
+              "order.criada",
               orderProducer
       );
     }

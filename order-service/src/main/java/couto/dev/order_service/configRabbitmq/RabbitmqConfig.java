@@ -39,6 +39,6 @@ public class RabbitmqConfig {
 
     @Bean
     public DirectExchange orderExchange(){
-        return new DirectExchange("order.ex");
+        return new DirectExchange("order.exchange");
     }
 }

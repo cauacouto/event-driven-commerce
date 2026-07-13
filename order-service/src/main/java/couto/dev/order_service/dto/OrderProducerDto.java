@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -16,11 +15,9 @@ import java.util.UUID;
 
 public class OrderProducerDto {
 
-    private UUID id;
+    private UUID OrderId;
     private Integer produtoId;
-    private String nomeProduto;
     private Integer quantidade;
-    private BigDecimal valorProduto;
-    private OffsetDateTime dataCriacao;
+    private BigDecimal valorTotal;
 
 }

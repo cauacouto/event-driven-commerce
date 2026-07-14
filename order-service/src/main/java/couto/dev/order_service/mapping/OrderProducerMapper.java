@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface OrderProducerMapper {
 
-    @Mapping(source = "order.id",target ="OrderId")
+    @Mapping(source = "id",target ="orderId")
     OrderProducerDto toEvent(OrderEntity order);
 
 }

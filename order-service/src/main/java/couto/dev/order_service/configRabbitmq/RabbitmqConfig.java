@@ -13,6 +13,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitmqConfig {
 
+    private static final String PAGAMENTOEXCHANGE = "pagamento.exchange";
+    private static final String ORDEREXCHANGE = "order.exchange";
+
     @Bean
     public JacksonJsonMessageConverter jacksonJsonMessageConverter(){
         return new JacksonJsonMessageConverter();
@@ -39,6 +42,13 @@ public class RabbitmqConfig {
 
     @Bean
     public DirectExchange orderExchange(){
-        return new DirectExchange("order.exchange");
+        return new DirectExchange(ORDEREXCHANGE);
     }
+
+
+    @Bean
+    public DirectExchange pagamentoExchange(){
+        return new DirectExchange(PAGAMENTOEXCHANGE);
+    }
+
 }

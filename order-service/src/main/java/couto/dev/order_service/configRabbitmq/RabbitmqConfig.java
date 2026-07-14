@@ -1,10 +1,11 @@
 package couto.dev.order_service.configRabbitmq;
 
-import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +16,7 @@ public class RabbitmqConfig {
 
     private static final String PAGAMENTOEXCHANGE = "pagamento.exchange";
     private static final String ORDEREXCHANGE = "order.exchange";
+    private static final String PAGAMENTO_APROVADO_QUEUE = "pagamentoAprovado.queue";
 
     @Bean
     public JacksonJsonMessageConverter jacksonJsonMessageConverter(){
@@ -49,6 +51,22 @@ public class RabbitmqConfig {
     @Bean
     public DirectExchange pagamentoExchange(){
         return new DirectExchange(PAGAMENTOEXCHANGE);
+    }
+
+    @Bean
+    public Queue PagamentoAprovado(){
+       return QueueBuilder
+                .durable(PAGAMENTO_APROVADO_QUEUE)
+                .build();
+    }
+
+    @Bean
+    public Binding pagamentoBinding(Queue pagamentoAprovadoQueue,DirectExchange pagamentoExchange){
+        return BindingBuilder
+                .bind(pagamentoAprovadoQueue)
+                .to(pagamentoExchange)
+                .with("pagamento.aprovado");
+
     }
 
 }

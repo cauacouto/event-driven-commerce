@@ -9,13 +9,17 @@ import couto.dev.order_service.dto.ReservaEstoqueDto;
 import couto.dev.order_service.feingClint.estoqueClient;
 import couto.dev.order_service.mapping.OrderProducerMapper;
 import couto.dev.order_service.repository.OrderRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderService {
 
     private final OrderRepository orderRepository;
@@ -50,13 +54,16 @@ public class OrderService {
 
         producerOrder.enviar(event);
 
-
-
-
-
-
     }
 
+
+    @Transactional
+    public void confirmarPagamento(UUID orderId){
+        log.info("Buscando pedido {}", orderId);
+        OrderEntity order = orderRepository.findById(orderId)
+                .orElseThrow(()-> new RuntimeException("pedido não encontrado"));
+        order.setStatusOrder(StatusOrder.PAGAMENTO_APROVADO);
+    }
 
 }
 

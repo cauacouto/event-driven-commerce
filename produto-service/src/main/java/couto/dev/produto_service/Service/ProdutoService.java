@@ -49,12 +49,9 @@ public class ProdutoService {
         return new ProdutoResponseDto(
                 produto.getId(),
                 produto.getNome(),
-                produto.getDescricao(),
-                produto.getCategoria(),
                 produto.getQuantidade(),
-                produto.getPreco(),
-                produto.getStatusProduto(),
-                produto.getDataEntrada()
+                produto.getPreco()
+
         );
     }
 

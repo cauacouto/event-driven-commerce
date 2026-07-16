@@ -1,6 +1,8 @@
 package couto.dev.estoque_service.dto;
 
-import couto.dev.estoque_service.database.Enum.statusProduto;
+import couto.dev.estoque_service.Enum.StatusEstoque;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,9 +19,10 @@ public class EstoqueResponseDto {
 
     private Integer produtoId;
     private Integer quantidade;
-    private statusProduto statusProduto;
     private LocalDateTime atualizado;
-
-    public EstoqueResponseDto(Integer id, Integer produtoId, Integer quantidade) {
-    }
+    @Enumerated(EnumType.STRING)
+    private StatusEstoque statusEstoque;
 }
+//    public EstoqueResponseDto(Integer id, Integer produtoId, Integer quantidade) {
+//    }
+//}

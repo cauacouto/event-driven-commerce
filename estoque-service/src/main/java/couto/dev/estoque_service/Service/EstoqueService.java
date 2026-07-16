@@ -8,6 +8,7 @@ import couto.dev.estoque_service.dto.EstoqueRequestDto;
 import couto.dev.estoque_service.dto.EstoqueResponseDto;
 import couto.dev.estoque_service.dto.ResponseProdutoDto;
 import couto.dev.estoque_service.feingClient.ProdutoClient;
+import couto.dev.estoque_service.mapper.EstoqueMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class EstoqueService {
 
     private final EstoqueRepository estoqueRepository;
     private  final ProdutoClient produtoClient;
+    private final EstoqueMapper estoqueMapper;
     
     public void AdicionarEstoque(EstoqueRequestDto estoqueDto){
 
@@ -30,10 +32,18 @@ public class EstoqueService {
             throw new RuntimeException("produto inativo");
         }
 
-       EstoqueEntity estoque = new EstoqueEntity();
-       estoque.setProdutoId(estoqueDto.getProdutoId());
-       estoque.setQuantidade(estoqueDto.getQuantidade());
-       this.estoqueRepository.save(estoque);
+        EstoqueEntity estoque = estoqueRepository.findByProdutoId(estoqueDto.getProdutoId()).orElseGet(()-> {
+            EstoqueEntity novo = new EstoqueEntity();
+            novo.setProdutoId(estoqueDto.getProdutoId());
+            novo.setQuantidade(0);
+            return novo;
+        });
+        estoque.setQuantidade(
+                estoque.getQuantidade() + estoqueDto.getQuantidade()
+        );
+
+        estoqueRepository.save(estoque);
+
     }
 
     @Transactional
@@ -73,21 +83,22 @@ public class EstoqueService {
 
     @Transactional
     public void confirmarReserva(Integer produtoId){
-        EstoqueEntity estoque = buscarEstoque(produtoId);
+        EstoqueResponseDto estoque = buscarEstoque(produtoId);
         estoque.setStatusEstoque(StatusEstoque.PAGAMENTO_APROVADO);
-
-
     }
 
-    public EstoqueEntity buscarEstoque(Integer produtoId){ //criar dtoResponse
-        return estoqueRepository.findByProdutoId(produtoId)
+    public EstoqueResponseDto buscarEstoque(Integer produtoId){ //criar dtoResponse
+        EstoqueEntity estoque = estoqueRepository.findByProdutoId(produtoId)
                 .orElseThrow(()-> new RuntimeException("estoque não encontrado"));
+        return estoqueMapper.toDto(estoque);
     }
 
-    public List<EstoqueResponseDto> listarPorId(Integer produtoId){
-       return estoqueRepository.findAllById(produtoId);
+    public List<EstoqueResponseDto> listarEstoque(){
+        return estoqueRepository.findAll().stream()
+                .map(estoqueMapper::toDto)
+                .toList();
 
     }
 
-    }
+}
 

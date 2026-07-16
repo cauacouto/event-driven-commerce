@@ -31,9 +31,16 @@ public class estoquecontroller {
 
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<EstoqueResponseDto>> listarEstoque(@PathVariable Integer id){
-        return ResponseEntity.ok(estoqueService.listarPorId(id));
+    @GetMapping()
+    public ResponseEntity<List<EstoqueResponseDto>> listarEstoque(){
+        return ResponseEntity.ok(estoqueService.listarEstoque());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EstoqueResponseDto> buscarestoqueId(@PathVariable Integer id){
+        this.estoqueService.buscarEstoque(id);
+        return ResponseEntity.ok().build();
+    }
+
 
 }

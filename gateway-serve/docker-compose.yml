@@ -1,6 +1,6 @@
 services:
   gateway:
-    image: gateway-service:3.0
+    image: gateway-service:4.0
     container_name: gateway-serve
 
     ports:

@@ -1,6 +1,7 @@
 package couto.dev.order_service.controller;
 
 import couto.dev.order_service.dto.OrderRequestDto;
+import couto.dev.order_service.dto.OrderResponseDto;
 import couto.dev.order_service.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,8 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<Void> criarOrder(@RequestBody OrderRequestDto dto){
-        this.orderService.criarOrder(dto);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    public ResponseEntity<OrderResponseDto> criarOrder(@RequestBody OrderRequestDto dto){
+        OrderResponseDto response = orderService.criarOrder(dto);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 }

@@ -3,9 +3,8 @@ package couto.dev.order_service.service;
 import couto.dev.order_service.Enum.StatusOrder;
 import couto.dev.order_service.configRabbitmq.ProducerOrder;
 import couto.dev.order_service.domin.OrderEntity;
-import couto.dev.order_service.dto.OrderProducerDto;
-import couto.dev.order_service.dto.OrderRequestDto;
-import couto.dev.order_service.dto.ReservaEstoqueDto;
+import couto.dev.order_service.dto.*;
+import couto.dev.order_service.feingClint.ProdutoClient;
 import couto.dev.order_service.feingClint.estoqueClient;
 import couto.dev.order_service.mapping.OrderProducerMapper;
 import couto.dev.order_service.repository.OrderRepository;
@@ -26,34 +25,45 @@ public class OrderService {
     private final estoqueClient estoqueClient;
     private final ProducerOrder producerOrder;
     private final OrderProducerMapper producerMapper;
+    private final ProdutoClient produtoClient;
 
 
-    public void criarOrder(OrderRequestDto dto){
+    public OrderResponseDto criarOrder(OrderRequestDto dto){
+
+
+        ResponseProdutoDto produto = produtoClient.buscarProduto(dto.getProdutoId());
 
         estoqueClient.reservaEstoque(
                 new ReservaEstoqueDto(dto.getProdutoId(),
                         dto.getQuantidade()
+
+
                 )
         );
 
         OrderEntity order = new OrderEntity();
         order.setProdutoId(dto.getProdutoId());
         order.setQuantidade(dto.getQuantidade());
+        order.setValorProduto(produto.getPreco());
         order.setStatusOrder(StatusOrder.AGUARDANDO_PAGAMENTO);
 
 
-        BigDecimal valorTotal = order.getValorProduto()
+       BigDecimal valorTotal = produto.getPreco()
                 .multiply(BigDecimal.valueOf(dto.getQuantidade()));
 
         order.setValorTotal(valorTotal);
 
-       var orderSalva = orderRepository.save(order);
+
+
+        var orderSalva = orderRepository.save(order);
+
         OrderProducerDto event =
+
                 producerMapper.toEvent(orderSalva);
 
 
         producerOrder.enviar(event);
-
+        return producerMapper.toDto(order);
     }
 
 

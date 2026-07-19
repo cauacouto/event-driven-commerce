@@ -1,6 +1,7 @@
 package couto.dev.order_service.domin;
 
 import couto.dev.order_service.Enum.StatusOrder;
+import couto.dev.order_service.Enum.StatusPagamento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +10,6 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
@@ -32,6 +32,8 @@ public class OrderEntity {
     private BigDecimal valorTotal;
     @Enumerated(EnumType.STRING)
     private StatusOrder statusOrder;
+    @Enumerated(value = EnumType.STRING)
+    private StatusPagamento statusPagamento;
 
 
     @PrePersist

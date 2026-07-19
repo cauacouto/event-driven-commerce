@@ -68,11 +68,20 @@ public class OrderService {
 
 
     @Transactional
-    public void confirmarPagamento(UUID orderId){
-        log.info("Buscando pedido {}", orderId);
-        OrderEntity order = orderRepository.findById(orderId)
+    public void confirmarPagamento(UUID ordeId){
+        log.info("Buscando pedido {}", ordeId);
+        OrderEntity order = orderRepository.findById(ordeId)
                 .orElseThrow(()-> new RuntimeException("pedido não encontrado"));
         order.setStatusOrder(StatusOrder.PAGAMENTO_APROVADO);
+    }
+
+
+    @Transactional
+    public void RecusarPagamento(UUID ordeId){
+        log.info("Buscando pedido {}", ordeId);
+        OrderEntity order = orderRepository.findById(ordeId)
+                .orElseThrow(()-> new RuntimeException("pedido não encontrado"));
+        order.setStatusOrder(StatusOrder.PAGAMENTO_RECUSADO);
     }
 
 }

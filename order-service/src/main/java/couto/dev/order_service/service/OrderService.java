@@ -4,10 +4,12 @@ import couto.dev.order_service.Enum.StatusOrder;
 import couto.dev.order_service.configRabbitmq.ProducerOrder;
 import couto.dev.order_service.domin.OrderEntity;
 import couto.dev.order_service.dto.*;
+import couto.dev.order_service.exception.OrderException;
 import couto.dev.order_service.feingClint.ProdutoClient;
 import couto.dev.order_service.feingClint.estoqueClient;
 import couto.dev.order_service.mapping.OrderProducerMapper;
 import couto.dev.order_service.repository.OrderRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +30,11 @@ public class OrderService {
     private final ProdutoClient produtoClient;
 
 
+    @CircuitBreaker(
+            name = "produtoService",
+            fallbackMethod = "fallbackProduto"
+    )
     public OrderResponseDto criarOrder(OrderRequestDto dto){
-
 
         ResponseProdutoDto produto = produtoClient.buscarProduto(dto.getProdutoId());
 
@@ -64,6 +69,11 @@ public class OrderService {
 
         producerOrder.enviar(event);
         return producerMapper.toDto(order);
+    }
+
+    public void fallbackProduto(OrderRequestDto dto,Throwable ex) throws OrderException {
+        log.error("erro ao chamar produto-service",ex);
+        throw new OrderException("produto-service indisponivel");
     }
 
 

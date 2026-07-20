@@ -7,22 +7,32 @@ import couto.dev.estoque_service.database.repository.EstoqueRepository;
 import couto.dev.estoque_service.dto.EstoqueRequestDto;
 import couto.dev.estoque_service.dto.EstoqueResponseDto;
 import couto.dev.estoque_service.dto.ResponseProdutoDto;
+import couto.dev.estoque_service.exceptions.EstoqueException;
+import couto.dev.estoque_service.exceptions.ProdutoInsdisponivelException;
 import couto.dev.estoque_service.feingClient.ProdutoClient;
 import couto.dev.estoque_service.mapper.EstoqueMapper;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class EstoqueService {
 
     private final EstoqueRepository estoqueRepository;
     private  final ProdutoClient produtoClient;
     private final EstoqueMapper estoqueMapper;
-    
+
+
+    @CircuitBreaker(
+            name = "produtoService",
+            fallbackMethod = "fallbackProduto"
+    )
     public void AdicionarEstoque(EstoqueRequestDto estoqueDto){
 
         ResponseProdutoDto produto =
@@ -43,6 +53,14 @@ public class EstoqueService {
         );
 
         estoqueRepository.save(estoque);
+
+    }
+
+    public void Fallback(
+            EstoqueRequestDto dto,
+            Throwable ex) throws ProdutoInsdisponivelException {
+        log.error("produto-service indisponivel", ex);
+        throw new ProdutoInsdisponivelException("não foi possivel validar o produto. tente novamente mais tarde");
 
     }
 
@@ -89,7 +107,7 @@ public class EstoqueService {
 
     public EstoqueResponseDto buscarEstoque(Integer produtoId){ //criar dtoResponse
         EstoqueEntity estoque = estoqueRepository.findByProdutoId(produtoId)
-                .orElseThrow(()-> new RuntimeException("estoque não encontrado"));
+                .orElseThrow(()-> new EstoqueException("estoque não encontrado"));
         return estoqueMapper.toDto(estoque);
     }
 
